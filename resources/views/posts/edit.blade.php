@@ -3,18 +3,36 @@
 @section('title', 'Edit Post')
 
 @section('content')
-    <h1>Edit Post</h1>
+    <div class="container mt-4">
+        <h1>Edit Post</h1>
+        {{-- Display validation errors --}}
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+        {{-- form --}}
+        <form action="{{ route('posts.update', $post->id) }}" method="POST">
+            @csrf
+            @method('PUT')
 
-    <form action="{{ route('posts.update', $post->id) }}" method="POST">
-        @csrf
-        @method('PUT')
+            <div class="mb-3">
+                <label for="title" class="form-label">Post Title</label>
+                <input type="text" name="title" class="form-control" value="{{ old('title', $post->title) }}"
+                    placeholder="Enter title" required>
+            </div>
 
-        <label>Title:</label>
-        <input type="text" name="title" value="{{ $post->title }}" class="form-control">
+            <div class="mb-3">
+                <label for="body" class="form-label">Post Body</label>
+                <textarea name="body" class="form-control" rows="5" placeholder="Write your post here..."
+                    required>{{ old('body', $post->body) }}</textarea>
+            </div>
 
-        <label>Body:</label>
-        <textarea name="body" class="form-control">{{ $post->body }}</textarea>
-
-        <button type="submit" class="btn btn-success mt-2">Update</button>
-    </form>
+            <button type="submit" class="btn btn-success">Update Post</button>
+        </form>
+    </div>
 @endsection

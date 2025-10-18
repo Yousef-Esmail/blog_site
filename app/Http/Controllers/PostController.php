@@ -1,13 +1,19 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
 use App\Models\Post;
+use Illuminate\Support\Facades\Auth;
 class PostController extends Controller
 {
+     public function __construct()
+    {
+        $this->middleware('auth')->except(['index', 'show']);
+    }
     public function index()
     {
-        $posts = Post::all(); 
+        $posts = Post::with('user')->latest()->get();
         return view('posts.index',compact('posts'));
     }
     public function create()
@@ -22,6 +28,7 @@ class PostController extends Controller
     Post::create([
         'title' => $request->title,
         'body' => $request->body,
+        'user_id'=>Auth::id(),
     ]);
     return redirect()->route('posts.index')->with('success', 'Post created successfully!');
 
@@ -30,6 +37,11 @@ class PostController extends Controller
     {
         $post = Post::findOrFail($id);
         return view('posts.show', compact('post'));
+    }
+    public function myposts(){
+        $user = Auth::user();
+        $posts = Post::where('user_id', $user->id)->get();
+        return view('posts.my_posts', compact('posts'));
     }
     public function edit($id)
     {
