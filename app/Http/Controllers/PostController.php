@@ -7,7 +7,7 @@ use App\Models\Post;
 use Illuminate\Support\Facades\Auth;
 class PostController extends Controller
 {
-     public function __construct()
+    public function __construct()
     {
         $this->middleware('auth')->except(['index', 'show']);
     }
@@ -65,6 +65,6 @@ class PostController extends Controller
     {
         $post=Post::findOrFail($id);
         $post->delete();
-        return to_route('posts.index');
+        return to_route('posts.my_posts');
     }
 }
